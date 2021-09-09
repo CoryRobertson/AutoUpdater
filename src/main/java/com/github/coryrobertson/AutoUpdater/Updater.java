@@ -14,12 +14,19 @@ public class Updater
 
         //Variables to download the file and where to put it
         String fileName = "Datapacks.7z";
-        String urlFile = "url.txt";
+        String urlFile = "../lib/url.txt";
+        String altUrlFile = "url.txt";
         String outputName;
         String line;
 
         try {
-            FileReader fr = new FileReader(urlFile);//reads the url file
+            FileReader fr;
+            try {
+                fr = new FileReader(urlFile);//reads the url file
+            } catch (FileNotFoundException e)
+            {
+                fr = new FileReader(altUrlFile);
+            }
             BufferedReader br = new BufferedReader(fr);//reads it line by line
             line = br.readLine();//first line is url
             outputName = br.readLine();//second line is file name to output
@@ -34,7 +41,7 @@ public class Updater
             fos.getChannel().transferFrom(rbc,0,Long.MAX_VALUE);//save the file to the file output stream
             fos.close();
 
-            SevenZFile sevenZFile = new SevenZFile(new File("./output/" + fileName));//begin opeing the newly downloaded 7z file
+            SevenZFile sevenZFile = new SevenZFile(new File("./output/" + fileName));//begin opening the newly downloaded 7z file
             SevenZArchiveEntry entry;
             while ((entry = sevenZFile.getNextEntry()) != null){
                 if (entry.isDirectory()){
@@ -54,11 +61,11 @@ public class Updater
             output.delete();
 
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             System.out.println("error trying to download file\n");
             e.printStackTrace();
         }
-
 
 
     }
