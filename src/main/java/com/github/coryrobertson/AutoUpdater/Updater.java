@@ -2,7 +2,6 @@ package com.github.coryrobertson.AutoUpdater;
 
 import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
 import org.apache.commons.compress.archivers.sevenz.SevenZFile;
-import org.apache.commons.compress.archivers.sevenz.SevenZOutputFile;
 
 import java.io.*;
 import java.net.URL;
