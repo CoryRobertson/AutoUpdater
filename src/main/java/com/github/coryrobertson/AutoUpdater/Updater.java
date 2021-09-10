@@ -17,20 +17,42 @@ public class Updater
         String urlFile = "../lib/url.txt";
         String altUrlFile = "url.txt";
         String outputName;
-        String line;
+        String line = null;
+        boolean argsSet = false;
+        try
+        {
+            line = args[0];
+            fileName = args[1];
+            System.out.println("Running with command line arguments...");
+            argsSet = true;
+        }
+        catch (ArrayIndexOutOfBoundsException e)
+        {
+            System.out.println("Running with default params...");
+        }
 
         try {
-            FileReader fr;
-            try {
-                fr = new FileReader(urlFile);//reads the url file
-            } catch (FileNotFoundException e)
+            if(!argsSet) 
             {
-                fr = new FileReader(altUrlFile);
+                FileReader fr;
+                try {
+                    fr = new FileReader(urlFile);//reads the url file
+                } catch (FileNotFoundException e) {
+                    try {
+                        fr = new FileReader(altUrlFile);
+                    }catch (FileNotFoundException ee)
+                    {
+                        System.out.println("Error no url file found.");
+                        fr = null;
+                        System.exit(1);
+                    }
+                }
+                BufferedReader br = new BufferedReader(fr);//reads it line by line
+                line = br.readLine();//first line is url
+                outputName = br.readLine();//second line is file name to output
+                fileName = outputName;
+
             }
-            BufferedReader br = new BufferedReader(fr);//reads it line by line
-            line = br.readLine();//first line is url
-            outputName = br.readLine();//second line is file name to output
-            fileName = outputName;
             System.out.println(line);
             URL url = new URL(line);
             ReadableByteChannel rbc = Channels.newChannel(url.openStream());
