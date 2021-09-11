@@ -11,12 +11,21 @@ application
             mainClass = 'com.github.coryrobertson.AutoUpdater.Updater'
         }
 
+clean.doFirst
+        {
+            delete "./output/"
+            println "Cleaning ./output/ directory"
+        }
+
 jar {
     manifest {
         attributes(
                 'Main-Class': 'com.github.coryrobertson.AutoUpdater.Updater'
         )
     }
+    //These lines will add the dependencies to the jar as well instead of using fatJar below.
+    //dependsOn('dependencies')
+    //from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 task fatJar(type: Jar) {
