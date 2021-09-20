@@ -10,34 +10,45 @@ import java.nio.channels.ReadableByteChannel;
 
 public class Updater
 {
-    public static void main(String[] args){
 
+    public static void main(String[] args)
+    {
         //Variables to download the file and where to put it
         String fileName = "Datapacks.7z";
         String urlFile = "../lib/url.txt";
         String altUrlFile = "url.txt";
         String destination = "";
         String line = null;
-        boolean argsSet = false;
 
-        //This try catch block will decide if we use cmd args or a file of args
+        ArgState argState = checkArgs(args);// the arg state as determined from the args input
+
+        switch (argState)// Switch statement for the arg state to allow for more specialized execution depending on these states
+        {
+            case validArgsDelete:
+                line = args[0];
+                fileName = args[1];
+                destination = args[2]; // e.g. "./output/"
+                System.out.println("Running with command line arguments and not deleting the file...");
+                break;
+            case validArgs:
+                line = args[0];
+                fileName = args[1];
+                destination = args[2];
+                System.out.println("Running with command line arguments...");
+                break;
+            case errorArgs:
+                System.out.println("Error parsing command line args.");
+            case noArgs:
+                System.out.println("Running with default params...");
+                break;
+
+        }
+
         try
         {
-            line = args[0];
-            fileName = args[1];
-            destination = args[2]; // e.g. "./output/"
-            System.out.println("Running with command line arguments...");
-            argsSet = true;
-        }
-        catch (ArrayIndexOutOfBoundsException e)
-        {
-            System.out.println("Running with default params...");
-        }
-
-        try {
-            if(!argsSet) 
+            // no arguments are set
+            if(argState == ArgState.noArgs || argState == ArgState.errorArgs)
             {
-
                 //This try catch block will help us find the url.txt file, we can look in two places just in case as well.
                 FileReader fr;
                 try {
@@ -57,7 +68,6 @@ public class Updater
                 line = br.readLine();//first line is url
                 fileName = br.readLine();//second line is file name to output
                 destination = br.readLine();
-
             }
             //This block  will go to the url and begin downloading the file in a directory specified by the args, and then save the file.
             System.out.println(line);
@@ -88,12 +98,60 @@ public class Updater
                 out.write(content);//write the bytes into a file output stream
                 out.close();
             }
-            output.delete();//delete the archive after decompressing it.
+            if(argState != ArgState.validArgsDelete)
+            {
+                output.delete();//delete the archive after decompressing it.
+            }
         }
         catch (IOException e)
         {
-            System.out.println("error trying to download file\n");
+            System.out.println("error trying to download file, possibly lacking permissions in destination?");
             e.printStackTrace();
         }
+    }
+
+    /**
+     * A method to determine the qualifications of the input arguments
+     * @param args [0] = url, [1] = fileName, [2] = destination, (3) = delete?
+     * @return an ArgState depending on qualifications of the input arguments.
+     */
+    private static ArgState checkArgs(String[] args)
+    {
+        String line, fileName, destination, delete;
+        if(args.length == 3)
+        {
+            try
+            {
+                line = args[0];
+                fileName = args[1];
+                destination = args[2];
+            } catch (ArrayIndexOutOfBoundsException e) {return ArgState.errorArgs;}
+
+            //checks can be placed between the try catch and the return if needed
+
+            return ArgState.validArgs;
+        }
+        else if(args.length == 4)
+        {
+            try
+            {
+                line = args[0];
+                fileName = args[1];
+                destination = args[2];
+                delete = args[3];
+            } catch (ArrayIndexOutOfBoundsException e) {return ArgState.errorArgs;}
+
+            //simple way to check if we want to delete or not
+            if(delete.contains("d"))
+            {return ArgState.validArgsDelete;}
+            else
+            {return ArgState.validArgs;}
+        }
+        else if(args.length == 0)
+        {
+            return ArgState.noArgs;
+        }
+
+        return ArgState.errorArgs;
     }
 }
