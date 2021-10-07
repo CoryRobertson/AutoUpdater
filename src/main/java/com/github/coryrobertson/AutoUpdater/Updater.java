@@ -11,6 +11,10 @@ import java.nio.channels.ReadableByteChannel;
 public class Updater
 {
 
+    /**
+     * Downloads and extracts a .7z file from  a web page and puts it into a specified folder, args not necessary with a url.txt present.
+     * @param args = 0 url to update from, 1 args for filename to download and save to, args 2 for destination to output the extracted file
+     */
     public static void main(String[] args)
     {
         //Variables to download the file and where to put it
