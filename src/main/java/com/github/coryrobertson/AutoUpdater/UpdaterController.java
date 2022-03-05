@@ -14,6 +14,9 @@ public class UpdaterController
     boolean urlTextInputGiven = false;
     boolean destinationTextInputGiven = false;
 
+    public String url;
+    public String destination;
+
     @FXML
     private TextField urlText;
 
@@ -21,9 +24,12 @@ public class UpdaterController
     private TextField destinationText;
 
     @FXML
+    private Button updaterButton;
+
+    @FXML
     private void urlInputFieldEntered(ActionEvent ae)
     {
-        String url = urlText.getText();
+        url = urlText.getText();
         if (url.length() > 0)
         {
             Logger.log(url, LogLevels.LOG);
@@ -34,15 +40,28 @@ public class UpdaterController
     @FXML
     private void destinationInputFieldEntered(ActionEvent ae)
     {
+        destination = destinationText.getText();
+        if (destination.length() > 0)
+        {
+            Logger.log(destination, LogLevels.LOG);
+            destinationTextInputGiven = true;
+        }
 
     }
 
-    public void runUpdater(String url, String destination)
+    @FXML
+    private void runUpdater(ActionEvent ae)
     {
+        if(!(urlTextInputGiven && destinationTextInputGiven))
+        {
+            Logger.log("didnt update");
+            return;
+        }
 
+        Logger.log("did update");
 
-        String[] args = {url, DEFAULT_FILENAME, destination};
-        Updater.main(args);
+        //String[] args = {url, DEFAULT_FILENAME, destination};
+        //Updater.main(args);
     }
 
 }
