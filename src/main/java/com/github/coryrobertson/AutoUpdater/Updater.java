@@ -1,8 +1,9 @@
 package com.github.coryrobertson.AutoUpdater;
 
+import com.github.coryrobertson.Logger.LogLevels;
+import com.github.coryrobertson.Logger.Logger;
 import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
 import org.apache.commons.compress.archivers.sevenz.SevenZFile;
-
 import java.io.*;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -25,25 +26,24 @@ public class Updater
         String line = null;
 
         ArgState argState = checkArgs(args);// the arg state as determined from the args input
-
         switch (argState)// Switch statement for the arg state to allow for more specialized execution depending on these states
         {
             case validArgsDelete:
                 line = args[0];
                 fileName = args[1];
                 destination = args[2]; // e.g. "./output/"
-                System.out.println("Running with command line arguments and not deleting the file...");
+                Logger.log("Running with command line arguments and not deleting the file...", LogLevels.LOG);
                 break;
             case validArgs:
                 line = args[0];
                 fileName = args[1];
                 destination = args[2];
-                System.out.println("Running with command line arguments...");
+                Logger.log("Running with command line arguments...", LogLevels.LOG);
                 break;
             case errorArgs:
-                System.out.println("Error parsing command line args.");
+                Logger.log("Error parsing command line args.", LogLevels.ERROR);
             case noArgs:
-                System.out.println("Running with default params...");
+                Logger.log("Running with default params...", LogLevels.LOG);
                 break;
 
         }
@@ -62,11 +62,12 @@ public class Updater
                         fr = new FileReader(altUrlFile);
                     }catch (FileNotFoundException ee)
                     {
-                        System.out.println("Error no url file found.");
+                        Logger.log("Error no url file found.", LogLevels.ERROR);
                         fr = null;
                         System.exit(1);
                     }
                 }
+
                 //After finding the file we read it line by line to get the args
                 BufferedReader br = new BufferedReader(fr);//reads it line by line
                 line = br.readLine();//first line is url
@@ -74,6 +75,7 @@ public class Updater
                 destination = br.readLine();
             }
             //This block  will go to the url and begin downloading the file in a directory specified by the args, and then save the file.
+
             System.out.println(line);
             URL url = new URL(line);
             ReadableByteChannel rbc = Channels.newChannel(url.openStream());
@@ -83,6 +85,7 @@ public class Updater
             FileOutputStream fos = new FileOutputStream(output);
             fos.getChannel().transferFrom(rbc,0,Long.MAX_VALUE);//save the file to the file output stream
             fos.close();
+
 
             //This section will take in a 7z file and then decompress it.
             SevenZFile sevenZFile = new SevenZFile(output);//begin opening the newly downloaded 7z file
@@ -109,9 +112,11 @@ public class Updater
         }
         catch (IOException e)
         {
-            System.out.println("error trying to download file, possibly lacking permissions in destination?");
+            Logger.log("error trying to download file, possibly lacking permissions in destination?", LogLevels.ERROR);
             e.printStackTrace();
         }
+        Logger.log("Update complete", LogLevels.LOG);
+
     }
 
     /**

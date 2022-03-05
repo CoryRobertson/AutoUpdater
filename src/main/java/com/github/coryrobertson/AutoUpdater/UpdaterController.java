@@ -5,7 +5,9 @@ import com.github.coryrobertson.Logger.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 
 public class UpdaterController
@@ -27,8 +29,13 @@ public class UpdaterController
     private Button updaterButton;
 
     @FXML
+    private ImageView completionImage;
+
+    @FXML
     private void urlInputFieldEntered(ActionEvent ae)
     {
+        //don't really need any of this
+
         url = urlText.getText();
         if (url.length() > 0)
         {
@@ -40,28 +47,32 @@ public class UpdaterController
     @FXML
     private void destinationInputFieldEntered(ActionEvent ae)
     {
+        //don't really need any of this
+
         destination = destinationText.getText();
         if (destination.length() > 0)
         {
             Logger.log(destination, LogLevels.LOG);
             destinationTextInputGiven = true;
         }
-
     }
 
     @FXML
     private void runUpdater(ActionEvent ae)
     {
-        if(!(urlTextInputGiven && destinationTextInputGiven))
+        if(urlText.getText().length() > 0 && destinationText.getText().length() > 0)
         {
-            Logger.log("didnt update");
-            return;
+            Logger.log("did update");
+            String[] args = {urlText.getText(), DEFAULT_FILENAME, destinationText.getText()};
+            completionImage.setOpacity(0.0);
+
+            Updater.main(args);
+            completionImage.setOpacity(1.0);
         }
-
-        Logger.log("did update");
-
-        //String[] args = {url, DEFAULT_FILENAME, destination};
-        //Updater.main(args);
+        else
+        {
+            Logger.log("didn't update");
+        }
     }
 
 }
