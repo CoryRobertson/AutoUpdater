@@ -1,6 +1,6 @@
 package com.github.coryrobertson.AutoUpdater;
 
-import com.sun.org.apache.xpath.internal.Arg;
+//import com.sun.org.apache.xpath.internal.Arg;
 
 /**
  * Fancy arg state enum for checking the arguments of Updater, probably could have put this inside the Updater class but this was more fun.

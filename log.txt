@@ -1,0 +1,4 @@
+[Fri Mar 04 16:32:00 PST 2022][LOG]		hello world!
+[Fri Mar 04 16:32:02 PST 2022][LOG]		hello worl
+[Fri Mar 04 16:33:32 PST 2022][LOG]		dasda
+[Fri Mar 04 16:33:54 PST 2022][LOG]		dasdad

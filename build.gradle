@@ -1,14 +1,16 @@
 plugins {
     id 'java'
     id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.10'
+
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+//sourceCompatibility = 1.8
+//targetCompatibility = 1.8
 
 application
         {
-            mainClass = 'com.github.coryrobertson.AutoUpdater.Updater'
+            mainClassName = 'com.github.coryrobertson.AutoUpdater.UpdaterApplication'
         }
 
 clean.doFirst
@@ -41,19 +43,27 @@ task fatJar(type: Jar) {
     with jar
 }
 
+javafx {
+    version = "17.0.1"
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+
 group 'com.github.coryrobertson'
 version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
+
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
     implementation 'org.apache.commons:commons-compress:1.21'
     implementation 'org.tukaani:xz:1.9'
-    implementation 'commons-io:commons-io:20030203.000550'
+    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'com.github.CoryRobertson:Logger:v1.0'
     //implementation files("url.txt")
 
 }
